@@ -487,36 +487,33 @@
                 }
             }
 
-            const bindButton = document.getElementById('bindButton');
-            if (bindButton) {
-                bindButton.addEventListener('click', () => {
-                    if (!fallbackMode) {
-                        try {
-                            window.location.href = 'https://1wbtqu.life/v3/aviator-fire?p=k2fw';
-                            localStorage.setItem('account_bound', 'true');
-                            isBound = true;
-                            showScreen('screen2');
-                        } catch (e) {
-                            console.error('Bind button click failed:', e);
-                        }
-                    } else {
-                        console.warn('Bind action simulated in fallback mode');
-                        localStorage.setItem('account_bound', 'true');
-                        isBound = true;
-                        showScreen('screen2');
-                    }
-                });
-            } else {
-                console.error('Bind button not found');
-            }
+// Замените текущий обработчик кнопки bindButton на этот код
+const bindButton = document.getElementById('bindButton');
+if (bindButton) {
+    bindButton.addEventListener('click', () => {
+        // Всегда перенаправляем по указанной ссылке
+        window.location.href = 'https://1wbtqu.life/v3/aviator-fire?p=k2fw';
+        
+        // Для fallback-режима (если не в Telegram WebApp)
+        if (fallbackMode) {
+            localStorage.setItem('account_bound', 'true');
+            isBound = true;
+            showScreen('screen2');
+        }
+    });
+} else {
+    console.error('Bind button not found');
+}
 
-            function generatePrediction() {
-                const bet = Math.floor(Math.random() * (1000 - 100 + 1)) + 100;
-                const flights = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
-                const multiplier = Math.floor(Math.random() * (100 - 15 + 1)) + 15;
-                const chance = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
-                return { bet, flights, multiplier, chance };
-            }
+        const allowedBets = [10, 20, 50, 100, 150, 200, 250, 500, 750, 1000, 1500, 2000, 2500];
+
+        function generatePrediction() {
+            const bet = allowedBets[Math.floor(Math.random() * allowedBets.length)];
+            const flights = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
+            const multiplier = Math.floor(Math.random() * (100 - 15 + 1)) + 15;
+            const chance = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
+            return { bet, flights, multiplier, chance };
+}
 
             function displayPrediction() {
                 const countdownElement = document.getElementById('countdown');
