@@ -1,43 +1,3 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script>
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -45,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AviamastersAI</title>
     <style>
-        /* Tailwind CSS compiled output (generated from directives below) */
         *,
         ::before,
         ::after {
@@ -57,7 +16,8 @@
             margin: 0;
             line-height: inherit;
             user-select: none;
-            position: relative; /* Добавлено для корректного позиционирования оверлея */
+            position: relative;
+            overflow: hidden;
         }
         html {
             line-height: 1.5;
@@ -67,9 +27,7 @@
             tab-size: 4;
             font-family: Arial, sans-serif;
             height: 100vh;
-            overflow: hidden;
             position: relative;
-            /* ЗАМЕНА ФОНА НА КАРТИНКУ */
             background-image: url('bg_qnw-mcaP.jpg');
             background-size: cover;
             background-position: center;
@@ -78,12 +36,6 @@
             user-select: none;
         }
         
-        /* УДАЛЯЕМ ЭЛЕМЕНТЫ ОБЛАКОВ И МОРЯ */
-        .clouds, .sea {
-            display: none;
-        }
-        
-        /* ДОБАВЛЯЕМ ЗАТЕМНЕНИЕ ДЛЯ ЛУЧШЕЙ ЧИТАЕМОСТИ */
         body::before {
             content: "";
             position: absolute;
@@ -91,17 +43,15 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.3); /* Более светлый оверлей */
-            z-index: 0; /* Исправленный z-index */
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 0;
         }
         
-        /* ОСНОВНОЙ КОНТЕНТ */
-        .container, .plane-animation, .telegram-button, .screen {
+        .container, .telegram-button, .screen {
             position: relative;
-            z-index: 10; /* Контент над оверлеем */
+            z-index: 10;
         }
         
-        /* ОСТАЛЬНЫЕ СТИЛИ БЕЗ ИЗМЕНЕНИЙ */
         .container {
             width: 100%;
         }
@@ -135,37 +85,7 @@
         .mt-4 { margin-top: 1rem; }
         .bg-blue-900 { background-color: #1e3a8a; }
         .p-2 { padding: 0.5rem; }
-        .plane-animation {
-            position: absolute;
-            top: 10%;
-            left: 0;
-            width: 100px;
-            height: 60px;
-            background: url('https://via.placeholder.com/100x60?text=Cartoon+Plane') no-repeat center;
-            background-size: contain;
-            animation: planeFly 6s linear infinite;
-            user-select: none;
-            z-index: 20; /* Самолет над всем */
-        }
-        .smoke-trail {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(150, 150, 150, 0.8);
-            border-radius: 50%;
-            animation: smokeFade 0.2s linear forwards;
-            user-select: none;
-            z-index: 15; /* Дым под самолетом, но над контентом */
-        }
-        @keyframes planeFly {
-            0% { transform: translate(0, 0); }
-            30% { transform: translate(40%, -20%) rotate(45deg); }
-            60% { transform: translate(70%, 0) rotate(0deg); }
-            100% { transform: translate(100%, -100%) rotate(-45deg); }
-        }
-        @keyframes smokeFade {
-            to { opacity: 0; transform: scale(2); }
-        }
+        
         .title-text {
             font-size: 2rem;
             font-weight: bold;
@@ -230,19 +150,14 @@
             border-radius: 5px;
             text-decoration: none;
             font-size: 14px;
-            z-index: 30; /* Telegram кнопка всегда сверху */
-        }
-        .language-select {
-            margin-bottom: 1rem;
-            padding: 5px;
-            background-color: #1e40af;
-            color: white;
-            border-radius: 5px;
+            z-index: 30;
         }
         .language-buttons {
             display: flex;
             gap: 10px;
             margin-top: 10px;
+            position: relative;
+            z-index: 20;
         }
         .language-button {
             display: flex;
@@ -252,22 +167,89 @@
             background: none;
             border: none;
             cursor: pointer;
+            position: relative;
         }
         .language-button img {
-            width: 30px;
-            height: 20px;
+            width: 40px;
+            height: 30px;
             border: 1px solid #ccc;
+            transition: transform 0.3s ease;
+        }
+        .language-button:hover img {
+            transform: scale(1.1);
         }
         .language-button span {
             font-size: 12px;
             color: #f97316;
+            margin-top: 5px;
+        }
+        /* Стили для таймера */
+        #countdown {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+        #countdownValue {
+            color: #f97316;
+            font-size: 1.2em;
+        }
+        /* Скрываем кнопку нового прогноза изначально */
+        #newPredictionButton {
+            display: none;
+        }
+        /* Стили для уведомления о вызове админки */
+        #adminNotification {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1000;
+            display: none;
+        }
+        .admin-button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .admin-button-group button {
+            flex: 1;
+        }
+        /* Новые стили для выпадающего списка */
+        .bet-suggestions {
+            position: absolute;
+            background: #1e3a8a;
+            border: 1px solid #f97316;
+            border-radius: 0.5rem;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 100;
+            display: none;
+            width: calc(100% - 4px);
+            margin-top: 2px;
+        }
+        .bet-option {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .bet-option:hover {
+            background-color: #2c5282;
+        }
+        .bet-input-container {
+            position: relative;
         }
     </style>
 </head>
 <body>
-    <!-- УДАЛЕНЫ ДИВЫ С ОБЛАКАМИ И МОРЕМ -->
-    <div class="plane-animation" id="plane"></div>
     <a href="https://t.me/Aviamaster_BotBot" class="telegram-button">Telegram</a>
+    
+    <!-- Уведомление о вызове админки -->
+    <div id="adminNotification">Админ-панель активирована</div>
     
     <div class="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen">
         <div class="title-text">AviamastersAI</div>
@@ -279,11 +261,11 @@
             </button>
             <div class="language-buttons">
                 <button class="language-button" id="ruButton">
-                    <img src="https://flagcdn.com/w20/ru.png" alt="Russian Flag">
+                    <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
                     <span>RU</span>
                 </button>
                 <button class="language-button" id="enButton">
-                    <img src="https://flagcdn.com/w20/gb.png" alt="English Flag">
+                    <img src="https://flagcdn.com/gb.svg" alt="English Flag">
                     <span>ENG</span>
                 </button>
             </div>
@@ -297,11 +279,11 @@
             </button>
             <div class="language-buttons">
                 <button class="language-button" id="ruButton2">
-                    <img src="https://flagcdn.com/w20/ru.png" alt="Russian Flag">
+                    <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
                     <span>RU</span>
                 </button>
                 <button class="language-button" id="enButton2">
-                    <img src="https://flagcdn.com/w20/gb.png" alt="English Flag">
+                    <img src="https://flagcdn.com/gb.svg" alt="English Flag">
                     <span>ENG</span>
                 </button>
             </div>
@@ -310,7 +292,7 @@
         <!-- Screen 3: Prediction -->
         <div id="screen3" class="screen hidden flex flex-col items-center">
             <div id="predictionText" class="text-center text-lg prediction-frame"></div>
-            <div id="multiplierGraph" class="multiplier-graph mb-4">
+            <div id="multiplierGraph" class="multiplier-graph mb-4" style="display: none;">
                 <div id="graphBar" class="graph-bar"></div>
             </div>
             <div id="countdown" class="text-lg">ИИ сканирует полёты еще: <span id="countdownValue"></span></div>
@@ -319,11 +301,11 @@
             </button>
             <div class="language-buttons">
                 <button class="language-button" id="ruButton3">
-                    <img src="https://flagcdn.com/w20/ru.png" alt="Russian Flag">
+                    <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
                     <span>RU</span>
                 </button>
                 <button class="language-button" id="enButton3">
-                    <img src="https://flagcdn.com/w20/gb.png" alt="English Flag">
+                    <img src="https://flagcdn.com/gb.svg" alt="English Flag">
                     <span>ENG</span>
                 </button>
             </div>
@@ -333,25 +315,40 @@
         <div id="screen4" class="screen hidden flex flex-col items-center">
             <div class="text-lg mb-4">Админ-панель</div>
             <div class="w-full max-w-md">
-                <label class="block mb-2">Ставка (100-1000 руб):</label>
-                <input id="adminBet" type="number" min="100" max="1000" class="w-full p-2 rounded bg-blue-900 text-white" value="315">
+                <label class="block mb-2">Ставка (10-180,000 руб):</label>
+                <div class="bet-input-container">
+                    <input id="adminBet" type="number" min="10" max="180000" class="w-full p-2 rounded bg-blue-900 text-white" value="315">
+                    <div id="betSuggestions" class="bet-suggestions"></div>
+                </div>
+                
                 <label class="block mb-2 mt-4">Количество полётов (1-20):</label>
                 <input id="adminFlights" type="number" min="1" max="20" class="w-full p-2 rounded bg-blue-900 text-white" value="9">
+                
                 <label class="block mb-2 mt-4">Множитель (1X-100X):</label>
                 <input id="adminMultiplier" type="number" min="1" max="100" class="w-full p-2 rounded bg-blue-900 text-white" value="17">
+                
                 <label class="block mb-2 mt-4">Шанс (50-99%):</label>
                 <input id="adminChance" type="number" min="50" max="99" class="w-full p-2 rounded bg-blue-900 text-white" value="93">
-                <button id="saveAdminButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg mt-4 w-full font-semibold hover:bg-orange-600 transition">
-                    Сохранить настройки
+                
+                <div class="admin-button-group">
+                    <button id="saveAdminButton" class="button-animation bg-orange-500 text-white px-4 py-3 rounded-lg mt-2 font-semibold hover:bg-orange-600 transition">
+                        Сохранить
+                    </button>
+                    <button id="randomizeButton" class="button-animation bg-purple-600 text-white px-4 py-3 rounded-lg mt-2 font-semibold hover:bg-purple-700 transition">
+                        Вернуть к рандому
+                    </button>
+                </div>
+                <button id="backButton" class="button-animation bg-gray-500 text-white px-6 py-3 rounded-lg mt-2 w-full font-semibold hover:bg-gray-600 transition">
+                    Назад
                 </button>
             </div>
             <div class="language-buttons">
                 <button class="language-button" id="ruButton4">
-                    <img src="https://flagcdn.com/w20/ru.png" alt="Russian Flag">
+                    <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
                     <span>RU</span>
                 </button>
                 <button class="language-button" id="enButton4">
-                    <img src="https://flagcdn.com/w20/gb.png" alt="English Flag">
+                    <img src="https://flagcdn.com/gb.svg" alt="English Flag">
                     <span>ENG</span>
                 </button>
             </div>
@@ -388,20 +385,24 @@
                     return JSON.parse(atob(data));
                 } catch (e) {
                     console.error('Failed to decrypt settings:', e);
-                    return { bet: 315, flights: 9, multiplier: 17, chance: 93 };
+                    return { bet: 315, flights: 9, multiplier: 17, chance: 93, isRandom: true };
                 }
             };
 
+            // Список допустимых ставок
+            const allowedBets = [10, 20, 50, 100, 150, 200, 250, 500, 750, 
+                                1000, 1500, 2000, 2500, 5000, 10000, 
+                                15000, 30000, 60000, 120000, 180000];
+            
             let settings = JSON.parse(localStorage.getItem('aviamasters_settings') || '{}');
             if (settings.encrypted) {
                 settings = decrypt(settings.encrypted);
             } else {
-                settings = { bet: 315, flights: 9, multiplier: 17, chance: 93 };
+                settings = { bet: 315, flights: 9, multiplier: 17, chance: 93, isRandom: true };
             }
 
             let currentPrediction = null;
             let countdownInterval = null;
-
             let lang = localStorage.getItem('language') || 'ru';
 
             function updateLanguage(newLang) {
@@ -409,7 +410,7 @@
                 localStorage.setItem('language', lang);
 
                 const titleElement = document.querySelector('.title-text');
-                if (titleElement) titleElement.textContent = lang === 'ru' ? "AviamastersAI" : "AviamastersAI";
+                if (titleElement) titleElement.textContent = "AviamastersAI";
 
                 const bindButton = document.getElementById('bindButton');
                 if (bindButton) bindButton.textContent = lang === 'ru' ? "✈️ Привязать аккаунт 1win" : "✈️ Bind 1win Account";
@@ -427,7 +428,7 @@
                 if (adminTitle) adminTitle.textContent = lang === 'ru' ? "Админ-панель" : "Admin Panel";
 
                 const adminBetLabel = document.querySelector('#screen4 label:nth-child(1)');
-                if (adminBetLabel) adminBetLabel.textContent = lang === 'ru' ? "Ставка (100-1000 руб):" : "Bet (100-1000 RUB):";
+                if (adminBetLabel) adminBetLabel.textContent = lang === 'ru' ? "Ставка (10-180,000 руб):" : "Bet (10-180,000 RUB):";
 
                 const adminFlightsLabel = document.querySelector('#screen4 label:nth-child(3)');
                 if (adminFlightsLabel) adminFlightsLabel.textContent = lang === 'ru' ? "Количество полётов (1-20):" : "Flights (1-20):";
@@ -439,7 +440,13 @@
                 if (adminChanceLabel) adminChanceLabel.textContent = lang === 'ru' ? "Шанс (50-99%):" : "Chance (50-99%):";
 
                 const saveButton = document.getElementById('saveAdminButton');
-                if (saveButton) saveButton.textContent = lang === 'ru' ? "Сохранить настройки" : "Save Settings";
+                if (saveButton) saveButton.textContent = lang === 'ru' ? "Сохранить" : "Save";
+
+                const randomizeButton = document.getElementById('randomizeButton');
+                if (randomizeButton) randomizeButton.textContent = lang === 'ru' ? "Вернуть к рандому" : "Randomize";
+
+                const backButton = document.getElementById('backButton');
+                if (backButton) backButton.textContent = lang === 'ru' ? "Назад" : "Back";
 
                 const countdown = document.getElementById('countdown');
                 if (countdown) countdown.innerHTML = lang === 'ru' ? "ИИ сканирует полёты еще: <span id='countdownValue'></span>" : "AI scanning flights for: <span id='countdownValue'></span>";
@@ -456,20 +463,6 @@
                 }
             }
 
-            const languageSelect = document.getElementById('languageSelect');
-            if (languageSelect) {
-                languageSelect.value = lang;
-                languageSelect.addEventListener('change', (e) => updateLanguage(e.target.value));
-            }
-            updateLanguage(lang);
-
-            let isBound = localStorage.getItem('account_bound') === 'true';
-            if (isBound) {
-                showScreen('screen2');
-            } else {
-                showScreen('screen1');
-            }
-
             function showScreen(screenId) {
                 const screens = document.querySelectorAll('.screen');
                 if (screens) {
@@ -478,81 +471,171 @@
                         screen.classList.remove('visible');
                     });
                 }
+                
                 const targetScreen = document.getElementById(screenId);
                 if (targetScreen) {
                     targetScreen.classList.remove('hidden');
                     targetScreen.classList.add('visible');
-                } else {
-                    console.error(`Screen ${screenId} not found`);
                 }
             }
 
-// Замените текущий обработчик кнопки bindButton на этот код
-const bindButton = document.getElementById('bindButton');
-if (bindButton) {
-    bindButton.addEventListener('click', () => {
-        // Всегда перенаправляем по указанной ссылке
-        window.location.href = 'https://1wbtqu.life/v3/aviator-fire?p=k2fw';
-        
-        // Для fallback-режима (если не в Telegram WebApp)
-        if (fallbackMode) {
-            localStorage.setItem('account_bound', 'true');
-            isBound = true;
-            showScreen('screen2');
-        }
-    });
-} else {
-    console.error('Bind button not found');
-}
+            function showAdminNotification() {
+                const notification = document.getElementById('adminNotification');
+                if (notification) {
+                    notification.textContent = lang === 'ru' ? 'Админ-панель активирована' : 'Admin panel activated';
+                    notification.style.display = 'block';
+                    
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 2000);
+                }
+            }
 
-        const allowedBets = [10, 20, 50, 100, 150, 200, 250, 500, 750, 1000, 1500, 2000, 2500];
+            // Инициализация выпадающего списка для ставок
+            function initBetSuggestions() {
+                const betInput = document.getElementById('adminBet');
+                const suggestions = document.getElementById('betSuggestions');
+                
+                if (!betInput || !suggestions) return;
+                
+                // Заполняем список допустимых значений
+                suggestions.innerHTML = '';
+                allowedBets.forEach(bet => {
+                    const option = document.createElement('div');
+                    option.className = 'bet-option';
+                    option.textContent = bet.toLocaleString();
+                    option.dataset.value = bet;
+                    option.addEventListener('click', () => {
+                        betInput.value = bet;
+                        suggestions.style.display = 'none';
+                    });
+                    suggestions.appendChild(option);
+                });
+                
+                // Показываем список при фокусе
+                betInput.addEventListener('focus', () => {
+                    suggestions.style.display = 'block';
+                });
+                
+                // Скрываем список при потере фокуса
+                betInput.addEventListener('blur', () => {
+                    setTimeout(() => {
+                        suggestions.style.display = 'none';
+                    }, 200);
+                });
+                
+                // Обработка ручного ввода
+                betInput.addEventListener('input', () => {
+                    const value = parseInt(betInput.value) || 0;
+                    const validValue = getClosestBet(value);
+                    betInput.value = validValue;
+                });
+                
+                // Обработка стрелочек
+                betInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                        e.preventDefault();
+                        changeBetWithArrow(e.key);
+                    }
+                });
+            }
+            
+            // Получение ближайшей допустимой ставки
+            function getClosestBet(value) {
+                if (allowedBets.includes(value)) return value;
+                
+                let closest = allowedBets[0];
+                let minDiff = Math.abs(value - closest);
+                
+                for (const bet of allowedBets) {
+                    const diff = Math.abs(value - bet);
+                    if (diff < minDiff) {
+                        minDiff = diff;
+                        closest = bet;
+                    }
+                }
+                
+                return closest;
+            }
+            
+            // Изменение ставки с помощью стрелочек
+            function changeBetWithArrow(key) {
+                const betInput = document.getElementById('adminBet');
+                const currentValue = parseInt(betInput.value) || allowedBets[0];
+                const currentIndex = allowedBets.indexOf(getClosestBet(currentValue));
+                
+                let newIndex = currentIndex;
+                
+                if (key === 'ArrowUp' && currentIndex < allowedBets.length - 1) {
+                    newIndex = currentIndex + 1;
+                } else if (key === 'ArrowDown' && currentIndex > 0) {
+                    newIndex = currentIndex - 1;
+                }
+                
+                betInput.value = allowedBets[newIndex];
+            }
 
-        function generatePrediction() {
-            const bet = allowedBets[Math.floor(Math.random() * allowedBets.length)];
-            const flights = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
-            const multiplier = Math.floor(Math.random() * (100 - 15 + 1)) + 15;
-            const chance = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
-            return { bet, flights, multiplier, chance };
-}
+            const bindButton = document.getElementById('bindButton');
+            if (bindButton) {
+                bindButton.addEventListener('click', () => {
+                    window.location.href = 'https://1wbtqu.life/v3/aviator-fire?p=k2fw';
+                    
+                    if (fallbackMode) {
+                        localStorage.setItem('account_bound', 'true');
+                        isBound = true;
+                        showScreen('screen2');
+                    }
+                });
+            }
+
+            // Генерация случайных настроек
+            function generateRandomSettings() {
+                const bet = allowedBets[Math.floor(Math.random() * allowedBets.length)];
+                const flights = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
+                const multiplier = Math.floor(Math.random() * (100 - 15 + 1)) + 15;
+                const chance = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
+                return { bet, flights, multiplier, chance, isRandom: true };
+            }
 
             function displayPrediction() {
+                // Сбрасываем предыдущий таймер
+                if (countdownInterval) {
+                    clearInterval(countdownInterval);
+                    countdownInterval = null;
+                }
+                
+                // Показываем таймер, скрываем график и кнопку
                 const countdownElement = document.getElementById('countdown');
                 const graphElement = document.getElementById('multiplierGraph');
-
-                if (countdownInterval && countdownElement && graphElement) {
+                const newPredictionButton = document.getElementById('newPredictionButton');
+                
+                if (countdownElement && graphElement && newPredictionButton) {
                     countdownElement.style.display = 'block';
                     graphElement.style.display = 'none';
-                    const predictionText = document.getElementById('predictionText');
-                    if (predictionText && currentPrediction) {
-                        predictionText.innerHTML = lang === 'ru' ? 
-                            `${"При ставке"} ${currentPrediction.bet} RUB, ${"максимальный выигрыш будет через"} ${currentPrediction.flights} ${"полётов"},<br>
-                            ${"множитель"} ${currentPrediction.multiplier}X, ${"шанс успеха"} ${currentPrediction.chance}%<br><br>
-                            ${"Удачного полёта!"}` :
-                            `${"With a bet of"} ${currentPrediction.bet} RUB, ${"MAXWIN will occur in"} ${currentPrediction.flights} ${"flights"},<br>
-                            ${"multiplier"} ${currentPrediction.multiplier}X, ${"Chance of success"} ${currentPrediction.chance}%<br><br>
-                            ${"Good flight!"}`;
-                    }
-                } else if (countdownElement && graphElement) {
-                    currentPrediction = isBound ? generatePrediction() : settings;
-                    const predictionText = document.getElementById('predictionText');
-                    if (predictionText) {
-                        predictionText.innerHTML = lang === 'ru' ? 
-                            `${"При ставке"} ${currentPrediction.bet} RUB, ${"максимальный выигрыш будет через"} ${currentPrediction.flights} ${"полётов"},<br>
-                            ${"множитель"} ${currentPrediction.multiplier}X, ${"шанс успеха"} ${currentPrediction.chance}%<br><br>
-                            ${"Удачного полёта!"}` :
-                            `${"With a bet of"} ${currentPrediction.bet} RUB, ${"MAXWIN will occur in"} ${currentPrediction.flights} ${"flights"},<br>
-                            ${"multiplier"} ${currentPrediction.multiplier}X, ${"Chance of success"} ${currentPrediction.chance}%<br><br>
-                            ${"Good flight!"}`;
-                    }
-                    graphElement.style.display = 'block';
-                    const graphBar = document.getElementById('graphBar');
-                    if (graphBar) graphBar.style.width = `${currentPrediction.multiplier}%`;
-                    countdownElement.style.display = 'none';
-                    const randomSeconds = Math.floor(Math.random() * (60 - 10 + 1)) + 10;
-                    startCountdown(randomSeconds);
-                } else {
-                    console.error('Required elements for prediction not found');
+                    newPredictionButton.style.display = 'none';
                 }
+                
+                // Используем настройки из админ-панели или генерируем случайные
+                if (settings.isRandom) {
+                    currentPrediction = generateRandomSettings();
+                } else {
+                    currentPrediction = settings;
+                }
+                
+                const predictionText = document.getElementById('predictionText');
+                if (predictionText) {
+                    predictionText.innerHTML = lang === 'ru' ? 
+                        `${"При ставке"} ${currentPrediction.bet} RUB, ${"максимальный выигрыш будет через"} ${currentPrediction.flights} ${"полётов"},<br>
+                        ${"множитель"} ${currentPrediction.multiplier}X, ${"шанс успеха"} ${currentPrediction.chance}%<br><br>
+                        ${"Удачного полёта!"}` :
+                        `${"With a bet of"} ${currentPrediction.bet} RUB, ${"MAXWIN will occur in"} ${currentPrediction.flights} ${"flights"},<br>
+                        ${"multiplier"} ${currentPrediction.multiplier}X, ${"Chance of success"} ${currentPrediction.chance}%<br><br>
+                        ${"Good flight!"}`;
+                }
+                
+                // Запускаем обратный отсчет
+                const randomSeconds = Math.floor(Math.random() * (60 - 10 + 1)) + 10;
+                startCountdown(randomSeconds);
 
                 showScreen('screen3');
             }
@@ -560,48 +643,46 @@ if (bindButton) {
             function startCountdown(seconds) {
                 let timeLeft = seconds;
                 const countdownElement = document.getElementById('countdownValue');
+                const countdownContainer = document.getElementById('countdown');
+                const graphElement = document.getElementById('multiplierGraph');
+                const newPredictionButton = document.getElementById('newPredictionButton');
+                
                 if (countdownElement) {
+                    countdownElement.textContent = `${timeLeft} ${lang === 'en' ? 'sec' : 'сек'}`;
+                    
                     countdownInterval = setInterval(() => {
-                        countdownElement.textContent = `${timeLeft} ${lang === 'en' ? 'sec' : 'сек'}`;
                         timeLeft--;
-                        if (timeLeft < 0) {
+                        countdownElement.textContent = `${timeLeft} ${lang === 'en' ? 'sec' : 'сек'}`;
+                        
+                        if (timeLeft <= 0) {
                             clearInterval(countdownInterval);
                             countdownInterval = null;
-                            const countdown = document.getElementById('countdown');
-                            const graphElement = document.getElementById('multiplierGraph');
-                            if (countdown && graphElement) {
-                                countdown.style.display = 'none';
+                            
+                            // По завершении таймера показываем график и кнопку
+                            if (countdownContainer && graphElement && newPredictionButton) {
+                                countdownContainer.style.display = 'none';
                                 graphElement.style.display = 'block';
-                                countdownElement.textContent = lang === 'en' ? 'Completed!' : 'Завершено!';
+                                newPredictionButton.style.display = 'block';
+                                
+                                // Анимируем график
+                                const graphBar = document.getElementById('graphBar');
+                                if (graphBar) {
+                                    graphBar.style.width = '0';
+                                    setTimeout(() => {
+                                        graphBar.style.width = `${currentPrediction.multiplier}%`;
+                                    }, 100);
+                                }
                             }
                         }
                     }, 1000);
-                } else {
-                    console.error('Countdown value element not found');
                 }
             }
 
             const predictButton = document.getElementById('predictButton');
-            if (predictButton) {
-                predictButton.addEventListener('click', displayPrediction);
-            } else {
-                console.error('Predict button not found');
-            }
+            if (predictButton) predictButton.addEventListener('click', displayPrediction);
 
             const newPredictionButton = document.getElementById('newPredictionButton');
-            if (newPredictionButton) {
-                newPredictionButton.addEventListener('click', displayPrediction);
-            } else {
-                console.error('New prediction button not found');
-            }
-
-            if (!fallbackMode) {
-                TelegramWebApp.onEvent('mainButtonClicked', () => {
-                    if (TelegramWebApp.initDataUnsafe?.start_param === 'adminforme') {
-                        showScreen('screen4');
-                    }
-                });
-            }
+            if (newPredictionButton) newPredictionButton.addEventListener('click', displayPrediction);
 
             const saveAdminButton = document.getElementById('saveAdminButton');
             if (saveAdminButton) {
@@ -610,65 +691,93 @@ if (bindButton) {
                     const adminFlights = document.getElementById('adminFlights');
                     const adminMultiplier = document.getElementById('adminMultiplier');
                     const adminChance = document.getElementById('adminChance');
+                    
                     if (adminBet && adminFlights && adminMultiplier && adminChance) {
-                        const bet = Math.max(100, Math.min(1000, parseInt(adminBet.value) || 315));
+                        const bet = parseInt(adminBet.value) || 315;
                         const flights = Math.max(1, Math.min(20, parseInt(adminFlights.value) || 9));
                         const multiplier = Math.max(1, Math.min(100, parseInt(adminMultiplier.value) || 17));
                         const chance = Math.max(50, Math.min(99, parseInt(adminChance.value) || 93));
-                        settings = { bet, flights, multiplier, chance };
+                        
+                        settings = { bet, flights, multiplier, chance, isRandom: false };
                         localStorage.setItem('aviamasters_settings', JSON.stringify({ encrypted: encrypt(settings) }));
+                        
                         if (!fallbackMode) {
                             TelegramWebApp.showAlert(lang === 'ru' ? "Настройки сохранены!" : "Settings Saved!");
                         } else {
                             alert(lang === 'ru' ? "Настройки сохранены!" : "Settings Saved!");
                         }
+                        
                         showScreen('screen2');
-                    } else {
-                        console.error('Admin input elements not found');
                     }
                 });
-            } else {
-                console.error('Save admin button not found');
             }
 
-            const inputs = document.querySelectorAll('input');
-            if (inputs) {
-                inputs.forEach(input => {
-                    input.addEventListener('input', () => {
-                        input.value = input.value.replace(/[<>"'%;()&+]/g, '');
-                    });
+            // Кнопка возврата к рандомным настройкам
+            const randomizeButton = document.getElementById('randomizeButton');
+            if (randomizeButton) {
+                randomizeButton.addEventListener('click', () => {
+                    settings = generateRandomSettings();
+                    localStorage.setItem('aviamasters_settings', JSON.stringify({ encrypted: encrypt(settings) }));
+                    
+                    // Обновляем значения в админ-панели
+                    document.getElementById('adminBet').value = settings.bet;
+                    document.getElementById('adminFlights').value = settings.flights;
+                    document.getElementById('adminMultiplier').value = settings.multiplier;
+                    document.getElementById('adminChance').value = settings.chance;
+                    
+                    if (!fallbackMode) {
+                        TelegramWebApp.showAlert(lang === 'ru' ? "Настройки рандомизированы!" : "Settings Randomized!");
+                    } else {
+                        alert(lang === 'ru' ? "Настройки рандомизированы!" : "Settings Randomized!");
+                    }
                 });
-            } else {
-                console.error('Input elements not found');
             }
 
-            const plane = document.getElementById('plane');
-            if (plane) {
-                function createSmoke() {
-                    const smoke = document.createElement('div');
-                    smoke.className = 'smoke-trail';
-                    const planeRect = plane.getBoundingClientRect();
-                    smoke.style.left = (planeRect.left + planeRect.width / 2 - 10) + 'px';
-                    smoke.style.top = (planeRect.top + planeRect.height / 2 - 10) + 'px';
-                    document.body.appendChild(smoke);
-                    setTimeout(() => smoke.remove(), 200);
-                }
-                plane.addEventListener('animationiteration', createSmoke);
-                createSmoke();
-            } else {
-                console.error('Plane element not found');
+            const backButton = document.getElementById('backButton');
+            if (backButton) {
+                backButton.addEventListener('click', () => {
+                    showScreen('screen2');
+                });
             }
 
-            // Language switch buttons
             const ruButtons = document.querySelectorAll('[id^="ruButton"]');
             ruButtons.forEach(button => {
-                button.addEventListener('click', () => updateLanguage('ru'));
+                button.addEventListener('click', () => {
+                    updateLanguage('ru');
+                });
             });
 
             const enButtons = document.querySelectorAll('[id^="enButton"]');
             enButtons.forEach(button => {
-                button.addEventListener('click', () => updateLanguage('en'));
+                button.addEventListener('click', () => {
+                    updateLanguage('en');
+                });
             });
+
+            // Обработчик для вызова админ-панели по Ctrl+A
+            document.addEventListener('keydown', function(event) {
+                // Проверяем комбинацию Ctrl (или Cmd) + A
+                if ((event.ctrlKey || event.metaKey) && event.key === 'a') {
+                    event.preventDefault(); // Блокируем выделение текста
+                    
+                    // Заполняем поля текущими настройками
+                    document.getElementById('adminBet').value = settings.bet;
+                    document.getElementById('adminFlights').value = settings.flights;
+                    document.getElementById('adminMultiplier').value = settings.multiplier;
+                    document.getElementById('adminChance').value = settings.chance;
+                    
+                    // Показываем админ-панель
+                    showScreen('screen4');
+                    showAdminNotification();
+                }
+            });
+
+            let isBound = localStorage.getItem('account_bound') === 'true';
+            showScreen(isBound ? 'screen2' : 'screen1');
+            updateLanguage(lang);
+            
+            // Инициализация выпадающего списка
+            initBetSuggestions();
         });
     </script>
 </body>
