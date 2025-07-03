@@ -391,6 +391,20 @@
             font-weight: bold;
             color: #f97316;
             margin-bottom: 5px;
+            position: relative;
+            height: 1.5em;
+            overflow: hidden;
+            min-width: 80px;
+        }
+        
+        .stat-value > span {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            display: block;
+            text-align: center;
+            transition: all 0.5s ease;
         }
         
         .stat-label {
@@ -491,16 +505,16 @@
             </button>
             <div class="stats-container">
                 <div class="stat-item">
-                    <div class="stat-value" id="totalUsers">15,842</div>
-                    <div class="stat-label">Пользователей</div>
+                    <div class="stat-value" id="totalUsers"><span>15,842</span></div>
+                    <div class="stat-label" id="labelUsers1">Пользователей за 24 часа</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" id="todayWins">28,200</div>
-                    <div class="stat-label">Выигрышей сегодня</div>
+                    <div class="stat-value" id="todayWins"><span>28,200</span></div>
+                    <div class="stat-label" id="labelWins1">Выигрышей за 24 часа</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value" id="maxWin">112,675₽</div>
-                    <div class="stat-label">Макс. выигрыш</div>
+                    <div class="stat-label" id="labelMaxWin1">Макс. выигрыш</div>
                 </div>
             </div>
             <div class="language-buttons">
@@ -517,22 +531,22 @@
 
         <!-- Screen 2: После привязки -->
         <div id="screen2" class="screen hidden flex flex-col items-center">
-            <div class="text-green-400 mb-4" style="font-size: 1.2rem; font-weight: bold;">✅ Привязка успешна!</div>
+            <div class="text-green-400 mb-4" style="font-size: 1.2rem; font-weight: bold;" id="bindSuccess">✅ Привязка успешна!</div>
             <button id="predictButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
                 🔮 Узнать прогноз на MAXWIN
             </button>
             <div class="stats-container">
                 <div class="stat-item">
-                    <div class="stat-value" id="todayUsers">15,842</div>
-                    <div class="stat-label">Пользователей за сегодня</div>
+                    <div class="stat-value" id="todayUsers"><span>15,842</span></div>
+                    <div class="stat-label" id="labelUsers2">Пользователей за 24 часа</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value" id="todayWins2">28,200</div>
-                    <div class="stat-label">Выигрышей за сегодня</div>
+                    <div class="stat-value" id="todayWins2"><span>28,200</span></div>
+                    <div class="stat-label" id="labelWins2">Выигрышей за 24 часа</div>
                 </div>
                 <div class="stat-item">
                     <div class="stat-value" id="maxWin2">112,675₽</div>
-                    <div class="stat-label">Макс. выигрыш</div>
+                    <div class="stat-label" id="labelMaxWin2">Макс. выигрыш</div>
                 </div>
             </div>
             <div class="language-buttons">
@@ -553,7 +567,7 @@
             <div id="multiplierGraph" class="multiplier-graph mb-4" style="display: none;">
                 <div id="graphBar" class="graph-bar" data-multiplier="0"></div>
             </div>
-            <div id="countdown" class="text-lg">ИИ сканирует полёты еще: <span id="countdownValue"></span> <span class="loading-spinner"></span></div>
+            <div id="countdown" class="text-lg"><span id="countdownText">ИИ сканирует полёты еще:</span> <span id="countdownValue"></span> <span class="loading-spinner"></span></div>
             <button id="newPredictionButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
                 🔄 Новый прогноз
             </button>
@@ -572,21 +586,21 @@
 
         <!-- Screen 4: Админ-панель -->
         <div id="screen4" class="screen hidden flex flex-col items-center">
-            <div class="text-lg mb-4" style="font-size: 1.5rem; font-weight: bold; color: #f97316;">Админ-панель</div>
+            <div class="text-lg mb-4" style="font-size: 1.5rem; font-weight: bold; color: #f97316;" id="adminPanelTitle">Админ-панель</div>
             <div class="w-full max-w-md">
-                <label class="block mb-2">Ставка (10-180,000 руб):</label>
+                <label class="block mb-2" id="adminBetLabel">Ставка (10-180,000 руб):</label>
                 <div class="bet-input-container">
                     <input id="adminBet" type="number" min="10" max="180000" class="w-full p-2 rounded bg-blue-900 text-white" value="315">
                     <div id="betSuggestions" class="bet-suggestions"></div>
                 </div>
                 
-                <label class="block mb-2 mt-4">Количество полётов (1-20):</label>
+                <label class="block mb-2 mt-4" id="adminFlightsLabel">Количество полётов (1-20):</label>
                 <input id="adminFlights" type="number" min="1" max="20" class="w-full p-2 rounded bg-blue-900 text-white" value="9">
                 
-                <label class="block mb-2 mt-4">Множитель (1X-100X):</label>
+                <label class="block mb-2 mt-4" id="adminMultiplierLabel">Множитель (1X-100X):</label>
                 <input id="adminMultiplier" type="number" min="1" max="100" class="w-full p-2 rounded bg-blue-900 text-white" value="17">
                 
-                <label class="block mb-2 mt-4">Шанс (50-99%):</label>
+                <label class="block mb-2 mt-4" id="adminChanceLabel">Шанс (50-99%):</label>
                 <input id="adminChance" type="number" min="50" max="99" class="w-full p-2 rounded bg-blue-900 text-white" value="93">
                 
                 <div class="admin-button-group">
@@ -665,6 +679,168 @@
             let countdownInterval = null;
             let lang = localStorage.getItem('language') || 'ru';
             let predictionHistory = JSON.parse(localStorage.getItem('prediction_history') || '[]');
+            
+            // Данные счетчиков
+            let counters = {
+                users: 15842,
+                wins: 28200,
+                lastReset: null,
+                lastUpdate: null
+            };
+            
+            // Загрузка счетчиков из localStorage
+            const savedCounters = JSON.parse(localStorage.getItem('counters'));
+            if (savedCounters) {
+                counters = savedCounters;
+            }
+            
+            // Получение текущего времени в МСК (UTC+3)
+            function getMskTime() {
+                const now = new Date();
+                return new Date(now.getTime() + 3 * 60 * 60000);
+            }
+            
+            // Форматирование чисел с разделителями
+            function formatNumber(num) {
+                return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            }
+            
+            // Проверка и обновление счетчиков при загрузке
+            function initCounters() {
+                const mskNow = getMskTime();
+                const today = mskNow.toISOString().split('T')[0];
+                
+                // Если сегодняшняя дата не совпадает с lastReset, сбрасываем
+                if (counters.lastReset !== today) {
+                    counters.users = 15842;
+                    counters.wins = 28200;
+                    counters.lastReset = today;
+                }
+                
+                // Если есть lastUpdate, рассчитываем прирост за прошедшее время
+                if (counters.lastUpdate) {
+                    const lastUpdate = new Date(counters.lastUpdate);
+                    const diffHours = (mskNow - lastUpdate) / 3600000; // разница в часах
+                    
+                    if (diffHours > 0) {
+                        // Определяем коэффициент прироста в зависимости от времени суток
+                        const hours = lastUpdate.getUTCHours();
+                        let increment = diffHours * 0.2; // базовый прирост
+                        
+                        if (hours >= 12 && hours < 15) {
+                            increment *= 2; // дневной пик
+                        } else if (hours >= 19 && hours < 23) {
+                            increment *= 1.5; // вечерний пик
+                        }
+                        
+                        counters.users += Math.floor(increment);
+                        counters.wins = Math.round(counters.users * 1.78);
+                    }
+                }
+                
+                // Обновляем время последнего обновления
+                counters.lastUpdate = mskNow.toISOString();
+                localStorage.setItem('counters', JSON.stringify(counters));
+            }
+            
+            // Обновление счетчиков с анимацией
+            function updateCounterElement(element, newValue) {
+                // Если элемент не виден на экране, не обновляем его
+                if (!element.offsetParent) return;
+                
+                const oldSpan = element.querySelector('span');
+                if (!oldSpan) {
+                    element.textContent = newValue;
+                    return;
+                }
+                
+                const oldValue = oldSpan.textContent;
+                if (oldValue === newValue) {
+                    return;
+                }
+                
+                // Создаем новый span
+                const newSpan = document.createElement('span');
+                newSpan.textContent = newValue;
+                newSpan.style.position = 'absolute';
+                newSpan.style.left = '0';
+                newSpan.style.top = '100%';
+                newSpan.style.width = '100%';
+                newSpan.style.opacity = '0';
+                
+                element.appendChild(newSpan);
+                
+                // Запуск анимации
+                requestAnimationFrame(() => {
+                    oldSpan.style.transform = 'translateY(-100%)';
+                    oldSpan.style.opacity = '0';
+                    newSpan.style.transform = 'translateY(-100%)';
+                    newSpan.style.opacity = '1';
+                });
+                
+                // Удаляем старый span после анимации
+                setTimeout(() => {
+                    oldSpan.remove();
+                }, 500);
+            }
+            
+            // Обновление всех счетчиков на странице
+            function updateAllCounters() {
+                const usersFormatted = formatNumber(Math.floor(counters.users));
+                const winsFormatted = formatNumber(Math.floor(counters.wins));
+                
+                // Обновляем элементы
+                const elements = [
+                    { id: 'totalUsers', value: usersFormatted },
+                    { id: 'todayWins', value: winsFormatted },
+                    { id: 'todayUsers', value: usersFormatted },
+                    { id: 'todayWins2', value: winsFormatted }
+                ];
+                
+                elements.forEach(item => {
+                    const el = document.getElementById(item.id);
+                    if (el) {
+                        updateCounterElement(el, item.value);
+                    }
+                });
+            }
+            
+            // Логика обновления счетчиков
+            function startCounters() {
+                // Инициализируем счетчики
+                initCounters();
+                
+                // Обновляем отображение
+                updateAllCounters();
+                
+                // Устанавливаем интервал обновления
+                setInterval(() => {
+                    const mskNow = getMskTime();
+                    const hours = mskNow.getUTCHours();
+                    
+                    // Определяем приращение в зависимости от времени
+                    let increment = 0.2; // базовый прирост
+                    if (hours >= 12 && hours < 15) {
+                        increment = 0.6; // дневной пик
+                    } else if (hours >= 19 && hours < 23) {
+                        increment = 0.4; // вечерний пик
+                    }
+                    
+                    // Обновляем значения
+                    counters.users += increment;
+                    counters.wins = Math.round(counters.users * 1.78);
+                    counters.lastUpdate = mskNow.toISOString();
+                    
+                    // Сохраняем в localStorage
+                    localStorage.setItem('counters', JSON.stringify(counters));
+                    
+                    // Обновляем отображение
+                    updateAllCounters();
+                }, 5000); // Обновление каждые 5 секунд
+            }
+            
+            // Запускаем счетчики
+            startCounters();
 
             // Обновление языка интерфейса
             function updateLanguage(newLang) {
@@ -675,46 +851,64 @@
                 const titleElement = document.querySelector('.title-text');
                 if (titleElement) titleElement.textContent = "AviamastersAI";
 
-                const bindButton = document.getElementById('bindButton');
-                if (bindButton) bindButton.textContent = lang === 'ru' ? "✈️ Привязать аккаунт 1win" : "✈️ Bind 1win Account";
-
-                const bindSuccess = document.querySelector('#screen2 .text-green-400');
-                if (bindSuccess) bindSuccess.textContent = lang === 'ru' ? "✅ Привязка успешна!" : "✅ Binding Successful!";
-
-                const predictButton = document.getElementById('predictButton');
-                if (predictButton) predictButton.textContent = lang === 'ru' ? "🔮 Узнать прогноз на MAXWIN" : "🔮 Get MAXWIN Prediction";
-
-                const newPredictionButton = document.getElementById('newPredictionButton');
-                if (newPredictionButton) newPredictionButton.textContent = lang === 'ru' ? "🔄 Новый прогноз" : "🔄 New Prediction";
-
-                const adminTitle = document.querySelector('#screen4 .text-lg');
-                if (adminTitle) adminTitle.textContent = lang === 'ru' ? "Админ-панель" : "Admin Panel";
-
-                const adminBetLabel = document.querySelector('#screen4 label:nth-child(1)');
-                if (adminBetLabel) adminBetLabel.textContent = lang === 'ru' ? "Ставка (10-180,000 руб):" : "Bet (10-180,000 RUB):";
-
-                const adminFlightsLabel = document.querySelector('#screen4 label:nth-child(3)');
-                if (adminFlightsLabel) adminFlightsLabel.textContent = lang === 'ru' ? "Количество полётов (1-20):" : "Flights (1-20):";
-
-                const adminMultiplierLabel = document.querySelector('#screen4 label:nth-child(5)');
-                if (adminMultiplierLabel) adminMultiplierLabel.textContent = lang === 'ru' ? "Множитель (1X-100X):" : "Multiplier (1X-100X):";
-
-                const adminChanceLabel = document.querySelector('#screen4 label:nth-child(7)');
-                if (adminChanceLabel) adminChanceLabel.textContent = lang === 'ru' ? "Шанс (50-99%):" : "Chance (50-99%):";
-
-                const saveButton = document.getElementById('saveAdminButton');
-                if (saveButton) saveButton.textContent = lang === 'ru' ? "Сохранить" : "Save";
-
-                const randomizeButton = document.getElementById('randomizeButton');
-                if (randomizeButton) randomizeButton.textContent = lang === 'ru' ? "Рандом" : "Random";
-
-                const backButton = document.getElementById('backButton');
-                if (backButton) backButton.textContent = lang === 'ru' ? "← Назад" : "← Back";
-
-                const countdown = document.getElementById('countdown');
-                if (countdown) countdown.innerHTML = lang === 'ru' ? 
-                    "ИИ сканирует полёты еще: <span id='countdownValue'></span> <span class='loading-spinner'></span>" : 
-                    "AI scanning flights for: <span id='countdownValue'></span> <span class='loading-spinner'></span>";
+                // Кнопки
+                document.getElementById('bindButton').textContent = 
+                    lang === 'ru' ? "✈️ Привязать аккаунт 1win" : "✈️ Bind 1win Account";
+                
+                document.getElementById('bindSuccess').textContent = 
+                    lang === 'ru' ? "✅ Привязка успешна!" : "✅ Binding Successful!";
+                
+                document.getElementById('predictButton').textContent = 
+                    lang === 'ru' ? "🔮 Узнать прогноз на MAXWIN" : "🔮 Get MAXWIN Prediction";
+                
+                document.getElementById('newPredictionButton').textContent = 
+                    lang === 'ru' ? "🔄 Новый прогноз" : "🔄 New Prediction";
+                
+                document.getElementById('adminPanelTitle').textContent = 
+                    lang === 'ru' ? "Админ-панель" : "Admin Panel";
+                
+                document.getElementById('adminBetLabel').textContent = 
+                    lang === 'ru' ? "Ставка (10-180,000 руб):" : "Bet (10-180,000 RUB):";
+                
+                document.getElementById('adminFlightsLabel').textContent = 
+                    lang === 'ru' ? "Количество полётов (1-20):" : "Flights (1-20):";
+                
+                document.getElementById('adminMultiplierLabel').textContent = 
+                    lang === 'ru' ? "Множитель (1X-100X):" : "Multiplier (1X-100X):";
+                
+                document.getElementById('adminChanceLabel').textContent = 
+                    lang === 'ru' ? "Шанс (50-99%):" : "Chance (50-99%):";
+                
+                document.getElementById('saveAdminButton').textContent = 
+                    lang === 'ru' ? "Сохранить" : "Save";
+                
+                document.getElementById('randomizeButton').textContent = 
+                    lang === 'ru' ? "Рандом" : "Random";
+                
+                document.getElementById('backButton').textContent = 
+                    lang === 'ru' ? "← Назад" : "← Back";
+                
+                document.getElementById('countdownText').textContent = 
+                    lang === 'ru' ? "ИИ сканирует полёты еще:" : "AI scanning flights for:";
+                
+                // Статистические подписи
+                document.getElementById('labelUsers1').textContent = 
+                    lang === 'ru' ? "Пользователей за 24 часа" : "Users in 24h";
+                
+                document.getElementById('labelWins1').textContent = 
+                    lang === 'ru' ? "Выигрышей за 24 часа" : "Wins in 24h";
+                
+                document.getElementById('labelMaxWin1').textContent = 
+                    lang === 'ru' ? "Макс. выигрыш" : "Max win";
+                
+                document.getElementById('labelUsers2').textContent = 
+                    lang === 'ru' ? "Пользователей за 24 часа" : "Users in 24h";
+                
+                document.getElementById('labelWins2').textContent = 
+                    lang === 'ru' ? "Выигрышей за 24 часа" : "Wins in 24h";
+                
+                document.getElementById('labelMaxWin2').textContent = 
+                    lang === 'ru' ? "Макс. выигрыш" : "Max win";
 
                 // Обновление текста прогноза, если он есть
                 const predictionText = document.getElementById('predictionText');
