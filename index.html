@@ -11,21 +11,19 @@
             border-width: 0;
             border-style: solid;
             border-color: #e5e7eb;
+            box-sizing: border-box;
         }
         body {
             margin: 0;
-            line-height: inherit;
+            line-height: 1.4;
             user-select: none;
             position: relative;
             overflow: hidden;
             font-family: 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
         }
         html {
-            line-height: 1.5;
             -webkit-text-size-adjust: 100%;
-            -moz-tab-size: 4;
-            -o-tab-size: 4;
-            tab-size: 4;
             height: 100vh;
             position: relative;
             background-image: url('https://images.unsplash.com/photo-1436491865332-7a61a109cc05?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
@@ -47,51 +45,36 @@
             z-index: 0;
         }
         
-        .container, .telegram-button, .screen {
+        .container, .telegram-button, .screen, .onewin-button {
             position: relative;
             z-index: 10;
         }
         
         .container {
             width: 100%;
-        }
-        @media (min-width: 640px) {
-            .container { max-width: 640px; }
-        }
-        @media (min-width: 768px) {
-            .container { max-width: 768px; }
+            max-width: 100%;
+            padding: 15px;
         }
         .mx-auto { margin-left: auto; margin-right: auto; }
-        .p-4 { padding: 1rem; }
         .flex { display: flex; }
         .flex-col { flex-direction: column; }
         .items-center { align-items: center; }
         .justify-center { justify-content: center; }
         .min-h-screen { min-height: 100vh; }
-        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
         .font-semibold { font-weight: 600; }
         .bg-orange-500 { background-color: #f97316; }
         .text-white { color: #ffffff; }
-        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
-        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
         .rounded-lg { border-radius: 0.5rem; }
         .hover\:bg-orange-600:hover { background-color: #ea580c; }
-        .transition { transition-property: background-color, border-color, color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
+        .transition { transition: all 0.3s ease; }
         .text-green-400 { color: #34d399; }
-        .mb-4 { margin-bottom: 1rem; }
-        .w-full { width: 100%; }
-        .max-w-md { max-width: 28rem; }
-        .block { display: block; }
-        .mt-4 { margin-top: 1rem; }
-        .bg-blue-900 { background-color: #1e3a8a; }
-        .p-2 { padding: 0.5rem; }
         
         .title-text {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: bold;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
             position: relative;
             z-index: 10;
             user-select: none;
@@ -99,6 +82,7 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: titleGlow 2s ease-in-out infinite alternate;
+            padding: 0 10px;
         }
         
         @keyframes titleGlow {
@@ -112,6 +96,7 @@
             z-index: 10;
             user-select: none;
             width: 100%;
+            padding: 10px;
         }
         .hidden { 
             opacity: 0; 
@@ -126,15 +111,15 @@
         
         .multiplier-graph {
             width: 100%;
-            height: 100px;
+            height: 70px;
             background: #1e40af;
             border: 2px solid #f97316;
             border-radius: 0.5rem;
             position: relative;
             overflow: hidden;
-            margin-bottom: 1rem;
+            margin: 10px 0;
             user-select: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
         .graph-bar {
             height: 100%;
@@ -147,12 +132,13 @@
         .graph-bar::after {
             content: attr(data-multiplier) "X";
             position: absolute;
-            right: 10px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
             color: white;
             font-weight: bold;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+            font-size: 0.9rem;
         }
         
         @keyframes grow {
@@ -163,44 +149,49 @@
         .prediction-frame {
             background: rgba(0, 0, 0, 0.7);
             border: 2px solid #f97316;
-            padding: 1.5rem;
+            padding: 0.8rem;
             border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
+            margin: 0 0 10px;
             user-select: none;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(5px);
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         
         .button-animation {
             transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
         .button-animation:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
         .button-animation:active {
             background-color: #c2410c;
             transform: scale(0.95);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
         }
         
         .telegram-button {
             position: absolute;
-            top: 15px;
-            right: 15px;
+            top: 10px;
+            right: 10px;
             background-color: #0088cc;
             color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
+            padding: 6px 12px;
+            border-radius: 6px;
             text-decoration: none;
-            font-size: 14px;
+            font-size: 12px;
             z-index: 30;
             display: flex;
             align-items: center;
-            gap: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            gap: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
         }
         
@@ -210,15 +201,41 @@
         }
         
         .telegram-button svg {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             fill: currentColor;
+        }
+        
+        /* Обновленная кнопка 1win */
+        .onewin-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #1e3a8a 0%, #000000 100%);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 12px;
+            z-index: 30;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            font-weight: bold;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .onewin-button:hover {
+            background: linear-gradient(135deg, #2c5282 0%, #111111 100%);
+            transform: translateY(-1px);
         }
         
         .language-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 15px;
             position: relative;
             z-index: 20;
         }
@@ -227,9 +244,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 8px;
+            padding: 6px;
             background: rgba(0,0,0,0.5);
-            border-radius: 8px;
+            border-radius: 6px;
             border: 1px solid rgba(255,255,255,0.1);
             cursor: pointer;
             position: relative;
@@ -242,9 +259,9 @@
         }
         
         .language-button img {
-            width: 40px;
-            height: 30px;
-            border-radius: 4px;
+            width: 30px;
+            height: 22px;
+            border-radius: 3px;
             transition: transform 0.3s ease;
         }
         
@@ -253,86 +270,91 @@
         }
         
         .language-button span {
-            font-size: 12px;
+            font-size: 10px;
             color: #f97316;
-            margin-top: 5px;
+            margin-top: 3px;
             font-weight: bold;
         }
         
         #countdown {
             background: rgba(0, 0, 0, 0.7);
-            padding: 15px 25px;
-            border-radius: 10px;
-            margin: 15px 0;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
             font-weight: bold;
             border: 1px solid #f97316;
             backdrop-filter: blur(5px);
             text-align: center;
+            font-size: 0.9rem;
         }
         
         #countdownValue {
             color: #f97316;
-            font-size: 1.4em;
+            font-size: 1.2em;
             font-weight: bold;
             display: inline-block;
-            min-width: 40px;
+            min-width: 30px;
         }
         
         #newPredictionButton {
             display: none;
-            margin-top: 20px;
+            margin-top: 15px;
         }
         
         #adminNotification {
             position: fixed;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%);
             background: rgba(0,0,0,0.9);
             color: #f97316;
-            padding: 12px 24px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             z-index: 1000;
             display: none;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
             animation: slideIn 0.5s ease-out;
             border: 1px solid #f97316;
+            font-size: 0.9rem;
         }
         
         @keyframes slideIn {
-            from { top: -50px; opacity: 0; }
-            to { top: 20px; opacity: 1; }
+            from { top: -40px; opacity: 0; }
+            to { top: 15px; opacity: 1; }
         }
         
         .admin-button-group {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
+            margin-top: 10px;
         }
         
         .admin-button-group button {
             flex: 1;
+            padding: 8px 10px;
+            font-size: 0.85rem;
         }
         
         .bet-suggestions {
             position: absolute;
             background: #1e3a8a;
             border: 1px solid #f97316;
-            border-radius: 0 0 8px 8px;
-            max-height: 200px;
+            border-radius: 0 0 6px 6px;
+            max-height: 150px;
             overflow-y: auto;
             z-index: 100;
             display: none;
             width: calc(100% - 2px);
             margin-top: -1px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
         .bet-option {
-            padding: 8px 12px;
+            padding: 6px 10px;
             cursor: pointer;
             transition: background-color 0.2s;
+            font-size: 0.9rem;
         }
         
         .bet-option:hover {
@@ -341,17 +363,17 @@
         
         .bet-input-container {
             position: relative;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         input {
             width: 100%;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
             background: rgba(30, 58, 138, 0.8);
             color: white;
             border: 1px solid #f97316;
-            font-size: 16px;
+            font-size: 0.9rem;
             transition: all 0.3s ease;
         }
         
@@ -363,38 +385,39 @@
         
         label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #f97316;
             font-weight: bold;
+            font-size: 0.9rem;
         }
         
         .stats-container {
             display: flex;
             justify-content: space-around;
             width: 100%;
-            margin: 20px 0;
+            margin: 15px 0;
             flex-wrap: wrap;
-            gap: 10px;
+            gap: 8px;
         }
         
         .stat-item {
             background: rgba(0,0,0,0.7);
-            border-radius: 8px;
-            padding: 10px 15px;
-            min-width: 100px;
+            border-radius: 6px;
+            padding: 8px 12px;
+            min-width: 80px;
             text-align: center;
             border: 1px solid #f97316;
         }
         
         .stat-value {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #f97316;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
             position: relative;
-            height: 1.5em;
+            height: 1.3em;
             overflow: hidden;
-            min-width: 80px;
+            min-width: 60px;
         }
         
         .stat-value > span {
@@ -408,53 +431,54 @@
         }
         
         .stat-label {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #d1d5db;
         }
         
         .history-item {
             background: rgba(0,0,0,0.5);
-            border-radius: 8px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid #f97316;
+            border-radius: 6px;
+            padding: 8px;
+            margin-bottom: 8px;
+            border-left: 3px solid #f97316;
             display: flex;
             justify-content: space-between;
+            font-size: 0.8rem;
         }
         
         .history-container {
             width: 100%;
-            max-height: 200px;
+            max-height: 150px;
             overflow-y: auto;
-            margin-top: 20px;
-            padding-right: 5px;
+            margin-top: 15px;
+            padding-right: 4px;
         }
         
         /* Scrollbar styles */
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
         }
         
         ::-webkit-scrollbar-track {
             background: rgba(0,0,0,0.2);
-            border-radius: 3px;
+            border-radius: 2px;
         }
         
         ::-webkit-scrollbar-thumb {
             background: #f97316;
-            border-radius: 3px;
+            border-radius: 2px;
         }
         
         /* Loading animation */
         .loading-spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
             border-radius: 50%;
             border-top-color: #f97316;
             animation: spin 1s ease-in-out infinite;
-            margin-left: 10px;
+            margin-left: 6px;
             vertical-align: middle;
         }
         
@@ -465,26 +489,77 @@
         /* Responsive adjustments */
         @media (max-width: 480px) {
             .title-text {
-                font-size: 1.8rem;
+                font-size: 1.6rem;
+                margin-bottom: 0.8rem;
             }
             
             .button-animation {
-                padding: 10px 20px;
-                font-size: 1rem;
+                padding: 8px 14px;
+                font-size: 0.85rem;
             }
             
             .prediction-frame {
-                padding: 1rem;
+                padding: 0.7rem;
+                font-size: 0.85rem;
+                line-height: 1.35;
             }
             
             .stats-container {
                 flex-direction: column;
                 align-items: center;
+                gap: 6px;
+                margin: 10px 0;
+            }
+            
+            .stat-item {
+                width: 100%;
+                max-width: 160px;
+                padding: 6px 10px;
+            }
+            
+            .multiplier-graph {
+                height: 60px;
+            }
+            
+            #countdown {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+            
+            .history-container {
+                max-height: 120px;
+                margin-top: 10px;
+            }
+            
+            .admin-button-group {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .admin-button-group button {
+                width: 100%;
+            }
+            
+            .telegram-button, .onewin-button {
+                font-size: 11px;
+                padding: 5px 8px;
+            }
+            .telegram-button {
+                right: 5px;
+            }
+            .onewin-button {
+                left: 5px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Обновленная кнопка 1win -->
+    <a href="https://1wilib.life/?open=register&p=fiog" class="onewin-button" target="_blank">
+        1WIN
+    </a>
+    
+    <!-- Кнопка Telegram -->
     <a href="https://t.me/Aviamaster_BotBot" class="telegram-button">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.054 5.56-5.022c.24-.213-.054-.334-.373-.121l-6.869 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.832.941z"/>
@@ -495,12 +570,12 @@
     <!-- Уведомление о вызове админки -->
     <div id="adminNotification">Админ-панель активирована</div>
     
-    <div class="container mx-auto p-4 flex flex-col items-center justify-center min-h-screen">
+    <div class="container mx-auto flex flex-col items-center justify-center min-h-screen">
         <div class="title-text">AviamastersAI</div>
 
         <!-- Screen 1: Привязка аккаунта -->
         <div id="screen1" class="screen visible flex flex-col items-center">
-            <button id="bindButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
+            <button id="bindButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
                 ✈️ Привязать аккаунт 1win
             </button>
             <div class="stats-container">
@@ -531,8 +606,8 @@
 
         <!-- Screen 2: После привязки -->
         <div id="screen2" class="screen hidden flex flex-col items-center">
-            <div class="text-green-400 mb-4" style="font-size: 1.2rem; font-weight: bold;" id="bindSuccess">✅ Привязка успешна!</div>
-            <button id="predictButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
+            <div class="text-green-400 mb-3" style="font-size: 1rem; font-weight: bold;" id="bindSuccess">✅ Привязка успешна!</div>
+            <button id="predictButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
                 🔮 Узнать прогноз на MAXWIN
             </button>
             <div class="stats-container">
@@ -563,12 +638,12 @@
 
         <!-- Screen 3: Прогноз -->
         <div id="screen3" class="screen hidden flex flex-col items-center">
-            <div id="predictionText" class="text-center text-lg prediction-frame"></div>
-            <div id="multiplierGraph" class="multiplier-graph mb-4" style="display: none;">
+            <div id="predictionText" class="text-center prediction-frame"></div>
+            <div id="multiplierGraph" class="multiplier-graph" style="display: none;">
                 <div id="graphBar" class="graph-bar" data-multiplier="0"></div>
             </div>
-            <div id="countdown" class="text-lg"><span id="countdownText">ИИ сканирует полёты еще:</span> <span id="countdownValue"></span> <span class="loading-spinner"></span></div>
-            <button id="newPredictionButton" class="button-animation bg-orange-500 text-white px-6 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
+            <div id="countdown"><span id="countdownText">ИИ сканирует полёты еще:</span> <span id="countdownValue"></span> <span class="loading-spinner"></span></div>
+            <button id="newPredictionButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
                 🔄 Новый прогноз
             </button>
             <div class="history-container" id="predictionHistory"></div>
@@ -586,32 +661,32 @@
 
         <!-- Screen 4: Админ-панель -->
         <div id="screen4" class="screen hidden flex flex-col items-center">
-            <div class="text-lg mb-4" style="font-size: 1.5rem; font-weight: bold; color: #f97316;" id="adminPanelTitle">Админ-панель</div>
+            <div class="mb-3" style="font-size: 1.3rem; font-weight: bold; color: #f97316;" id="adminPanelTitle">Админ-панель</div>
             <div class="w-full max-w-md">
                 <label class="block mb-2" id="adminBetLabel">Ставка (10-180,000 руб):</label>
                 <div class="bet-input-container">
-                    <input id="adminBet" type="number" min="10" max="180000" class="w-full p-2 rounded bg-blue-900 text-white" value="315">
+                    <input id="adminBet" type="number" min="10" max="180000" class="w-full rounded bg-blue-900 text-white" value="315">
                     <div id="betSuggestions" class="bet-suggestions"></div>
                 </div>
                 
-                <label class="block mb-2 mt-4" id="adminFlightsLabel">Количество полётов (1-20):</label>
-                <input id="adminFlights" type="number" min="1" max="20" class="w-full p-2 rounded bg-blue-900 text-white" value="9">
+                <label class="block mb-2 mt-3" id="adminFlightsLabel">Количество полётов (1-20):</label>
+                <input id="adminFlights" type="number" min="1" max="20" class="w-full rounded bg-blue-900 text-white" value="9">
                 
-                <label class="block mb-2 mt-4" id="adminMultiplierLabel">Множитель (1X-100X):</label>
-                <input id="adminMultiplier" type="number" min="1" max="100" class="w-full p-2 rounded bg-blue-900 text-white" value="17">
+                <label class="block mb-2 mt-3" id="adminMultiplierLabel">Множитель (1X-100X):</label>
+                <input id="adminMultiplier" type="number" min="1" max="100" class="w-full rounded bg-blue-900 text-white" value="17">
                 
-                <label class="block mb-2 mt-4" id="adminChanceLabel">Шанс (50-99%):</label>
-                <input id="adminChance" type="number" min="50" max="99" class="w-full p-2 rounded bg-blue-900 text-white" value="93">
+                <label class="block mb-2 mt-3" id="adminChanceLabel">Шанс (50-99%):</label>
+                <input id="adminChance" type="number" min="50" max="99" class="w-full rounded bg-blue-900 text-white" value="93">
                 
                 <div class="admin-button-group">
-                    <button id="saveAdminButton" class="button-animation bg-orange-500 text-white px-4 py-3 rounded-lg mt-2 font-semibold hover:bg-orange-600 transition">
+                    <button id="saveAdminButton" class="button-animation bg-orange-500 text-white rounded-lg mt-2 font-semibold hover:bg-orange-600 transition">
                         Сохранить
                     </button>
-                    <button id="randomizeButton" class="button-animation bg-purple-600 text-white px-4 py-3 rounded-lg mt-2 font-semibold hover:bg-purple-700 transition">
+                    <button id="randomizeButton" class="button-animation bg-purple-600 text-white rounded-lg mt-2 font-semibold hover:bg-purple-700 transition">
                         Рандом
                     </button>
                 </div>
-                <button id="backButton" class="button-animation bg-gray-500 text-white px-6 py-3 rounded-lg mt-2 w-full font-semibold hover:bg-gray-600 transition">
+                <button id="backButton" class="button-animation bg-gray-500 text-white rounded-lg mt-2 w-full font-semibold hover:bg-gray-600 transition">
                     ← Назад
                 </button>
             </div>
