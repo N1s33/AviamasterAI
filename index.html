@@ -21,6 +21,11 @@
             overflow: hidden;
             font-family: 'Arial', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            opacity: 0;
+            animation: fadeIn 1s ease forwards;
+        }
+        @keyframes fadeIn {
+            to { opacity: 1; }
         }
         html {
             -webkit-text-size-adjust: 100%;
@@ -83,6 +88,11 @@
             -webkit-text-fill-color: transparent;
             animation: titleGlow 2s ease-in-out infinite alternate;
             padding: 0 10px;
+            transform: translateY(20px);
+            animation: slideDown 0.8s ease forwards;
+        }
+        @keyframes slideDown {
+            to { transform: translateY(0); opacity: 1; }
         }
         
         @keyframes titleGlow {
@@ -107,43 +117,6 @@
             opacity: 1; 
             display: flex;
             transform: translateY(0);
-        }
-        
-        .multiplier-graph {
-            width: 100%;
-            height: 70px;
-            background: #1e40af;
-            border: 2px solid #f97316;
-            border-radius: 0.5rem;
-            position: relative;
-            overflow: hidden;
-            margin: 10px 0;
-            user-select: none;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        .graph-bar {
-            height: 100%;
-            background: linear-gradient(to right, #f97316, #fb923c);
-            animation: grow 2s ease-in-out;
-            user-select: none;
-            position: relative;
-        }
-        
-        .graph-bar::after {
-            content: attr(data-multiplier) "X";
-            position: absolute;
-            right: 8px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
-            font-size: 0.9rem;
-        }
-        
-        @keyframes grow {
-            from { width: 0; }
-            to { width: var(--target-width); }
         }
         
         .prediction-frame {
@@ -193,11 +166,14 @@
             gap: 4px;
             box-shadow: 0 1px 3px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: slideDown 0.8s 0.2s ease forwards;
         }
         
         .telegram-button:hover {
             background-color: #0077b5;
-            transform: translateY(-1px);
+            transform: translateY(-3px);
         }
         
         .telegram-button svg {
@@ -225,11 +201,14 @@
             transition: all 0.3s ease;
             font-weight: bold;
             border: 1px solid rgba(255,255,255,0.2);
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: slideDown 0.8s 0.2s ease forwards;
         }
         
         .onewin-button:hover {
             background: linear-gradient(135deg, #2c5282 0%, #111111 100%);
-            transform: translateY(-1px);
+            transform: translateY(-3px);
         }
         
         .language-buttons {
@@ -255,7 +234,7 @@
         
         .language-button:hover {
             background: rgba(0,0,0,0.7);
-            transform: translateY(-2px);
+            transform: translateY(-2px) scale(1.05);
         }
         
         .language-button img {
@@ -435,55 +414,129 @@
             color: #d1d5db;
         }
         
-        .history-item {
-            background: rgba(0,0,0,0.5);
-            border-radius: 6px;
-            padding: 8px;
-            margin-bottom: 8px;
-            border-left: 3px solid #f97316;
+        /* History button */
+        .history-button {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.7);
+            border: 2px solid #f97316;
             display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-        }
-        
-        .history-container {
-            width: 100%;
-            max-height: 150px;
-            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
             margin-top: 15px;
-            padding-right: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         }
         
-        /* Scrollbar styles */
-        ::-webkit-scrollbar {
+        .history-button:hover {
+            transform: rotate(90deg) scale(1.1);
+            background: rgba(0,0,0,0.9);
+        }
+        
+        .history-button::before {
+            content: "";
+            position: absolute;
             width: 4px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2);
-            border-radius: 2px;
-        }
-        
-        ::-webkit-scrollbar-thumb {
+            height: 20px;
             background: #f97316;
             border-radius: 2px;
+            transform-origin: bottom center;
+            transform: rotate(45deg);
         }
         
-        /* Loading animation */
-        .loading-spinner {
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
+        .history-button::after {
+            content: "";
+            position: absolute;
+            width: 4px;
+            height: 15px;
+            background: #f97316;
+            border-radius: 2px;
+            transform-origin: bottom center;
+            transform: rotate(-45deg);
+        }
+        
+        .history-button-circle {
+            position: absolute;
+            width: 80%;
+            height: 80%;
+            border: 2px solid #f97316;
             border-radius: 50%;
-            border-top-color: #f97316;
-            animation: spin 1s ease-in-out infinite;
-            margin-left: 6px;
-            vertical-align: middle;
+            border-top-color: transparent;
+            border-right-color: transparent;
         }
         
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        /* Full history screen */
+        .full-history-container {
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .full-history-item {
+            background: rgba(0,0,0,0.5);
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-left: 4px solid #f97316;
+            display: flex;
+            flex-direction: column;
+            font-size: 0.9rem;
+            animation: slideRight 0.5s ease;
+        }
+        
+        @keyframes slideRight {
+            from { transform: translateX(-20px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .full-history-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #f97316;
+        }
+        
+        .full-history-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        
+        .full-history-stat {
+            background: rgba(30, 58, 138, 0.3);
+            padding: 6px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        /* Multiplier display */
+        .multiplier-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #f97316;
+            text-shadow: 0 0 10px rgba(249, 115, 22, 0.7);
+            margin: 15px 0;
+            animation: multiplierAppear 0.8s ease-out;
+        }
+        
+        @keyframes multiplierAppear {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(249, 115, 22, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
         }
         
         /* Responsive adjustments */
@@ -517,18 +570,9 @@
                 padding: 6px 10px;
             }
             
-            .multiplier-graph {
-                height: 60px;
-            }
-            
             #countdown {
                 padding: 8px 12px;
                 font-size: 0.85rem;
-            }
-            
-            .history-container {
-                max-height: 120px;
-                margin-top: 10px;
             }
             
             .admin-button-group {
@@ -549,6 +593,19 @@
             }
             .onewin-button {
                 left: 5px;
+            }
+            
+            .multiplier-display {
+                font-size: 2rem;
+            }
+            
+            .full-history-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .history-button {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -575,7 +632,7 @@
 
         <!-- Screen 1: Привязка аккаунта -->
         <div id="screen1" class="screen visible flex flex-col items-center">
-            <button id="bindButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
+            <button id="bindButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition pulse">
                 ✈️ Привязать аккаунт 1win
             </button>
             <div class="stats-container">
@@ -607,7 +664,7 @@
         <!-- Screen 2: После привязки -->
         <div id="screen2" class="screen hidden flex flex-col items-center">
             <div class="text-green-400 mb-3" style="font-size: 1rem; font-weight: bold;" id="bindSuccess">✅ Привязка успешна!</div>
-            <button id="predictButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
+            <button id="predictButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition pulse">
                 🔮 Узнать прогноз на MAXWIN
             </button>
             <div class="stats-container">
@@ -639,14 +696,17 @@
         <!-- Screen 3: Прогноз -->
         <div id="screen3" class="screen hidden flex flex-col items-center">
             <div id="predictionText" class="text-center prediction-frame"></div>
-            <div id="multiplierGraph" class="multiplier-graph" style="display: none;">
-                <div id="graphBar" class="graph-bar" data-multiplier="0"></div>
-            </div>
             <div id="countdown"><span id="countdownText">ИИ сканирует полёты еще:</span> <span id="countdownValue"></span> <span class="loading-spinner"></span></div>
+            <div id="multiplierDisplay" class="multiplier-display" style="display: none;"></div>
             <button id="newPredictionButton" class="button-animation bg-orange-500 text-white rounded-lg font-semibold hover:bg-orange-600 transition">
                 🔄 Новый прогноз
             </button>
-            <div class="history-container" id="predictionHistory"></div>
+            
+            <!-- Кнопка истории в виде часов -->
+            <div class="history-button" id="historyButton">
+                <div class="history-button-circle"></div>
+            </div>
+            
             <div class="language-buttons">
                 <button class="language-button" id="ruButton3">
                     <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
@@ -701,7 +761,34 @@
                 </button>
             </div>
         </div>
+        
+        <!-- Screen 5: Полная история прогнозов -->
+        <div id="screen5" class="screen hidden flex flex-col items-center">
+            <div class="mb-3" style="font-size: 1.3rem; font-weight: bold; color: #f97316;" id="historyTitle">История прогнозов</div>
+            <div class="full-history-container" id="fullPredictionHistory"></div>
+            <button id="backFromHistoryButton" class="button-animation bg-gray-500 text-white rounded-lg mt-4 font-semibold hover:bg-gray-600 transition">
+                ← Назад к прогнозу
+            </button>
+            <div class="language-buttons">
+                <button class="language-button" id="ruButton5">
+                    <img src="https://flagcdn.com/ru.svg" alt="Russian Flag">
+                    <span>RU</span>
+                </button>
+                <button class="language-button" id="enButton5">
+                    <img src="https://flagcdn.com/gb.svg" alt="English Flag">
+                    <span>ENG</span>
+                </button>
+            </div>
+        </div>
     </div>
+
+    <!-- Звуковые эффекты -->
+    <audio id="countdownSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+    </audio>
+    <audio id="multiplierSound" preload="auto">
+        <source src="data:audio/mpeg;base64,SUQzBAAAAAABEVRYWFgAAAAtAAADY29tbWVudABCaWdTb3VuZEJhbmsuY29tIC8gTGFTb25vdGhlcXVlLm9yZwBURU5DAAAAHQAAA1N3aXRjaCBQbHVzIMKpIE5DSCBTb2Z0d2FyZQBUSVQyAAAABgAAAzIyMzUAVFNTRQAAAA8AAANMYXZmNTcuODMuMTAwAAAAAAAAAAAAAAD/80DEAAAAA0gAAAAATEFNRTMuMTAwVVVVVVVVVVVVVUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQsRbAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVf/zQMSkAAADSAAAAABVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVV" type="audio/mpeg">
+    </audio>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
@@ -727,11 +814,13 @@
                 TelegramWebApp.expand();
             }
 
-            // Функции шифрования (для хранения настроек)
-            const encrypt = (data) => btoa(JSON.stringify(data));
+            // Функции шифрования (для хранения настроек с солью)
+            const salt = "aviamasters_salt_123!";
+            const encrypt = (data) => btoa(JSON.stringify(data) + salt);
             const decrypt = (data) => {
                 try {
-                    return JSON.parse(atob(data));
+                    const decoded = atob(data);
+                    return JSON.parse(decoded.replace(salt, ''));
                 } catch (e) {
                     return { bet: 315, flights: 9, multiplier: 17, chance: 93, isRandom: true };
                 }
@@ -914,6 +1003,42 @@
                 }, 5000); // Обновление каждые 5 секунд
             }
             
+            // Обновление полной истории прогнозов
+            function updateFullPredictionHistory() {
+                const container = document.getElementById('fullPredictionHistory');
+                if (!container) return;
+                
+                container.innerHTML = '';
+                
+                predictionHistory.forEach((item, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'full-history-item';
+                    
+                    const date = new Date(item.timestamp);
+                    const formattedDate = date.toLocaleString(lang === 'ru' ? 'ru-RU' : 'en-US', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    el.innerHTML = `
+                        <div class="full-history-header">
+                            <span>${lang === 'ru' ? 'Прогноз' : 'Prediction'} #${predictionHistory.length - index}</span>
+                            <span>${formattedDate}</span>
+                        </div>
+                        <div class="full-history-details">
+                            <div class="full-history-stat">${lang === 'ru' ? 'Ставка' : 'Bet'}: <b>${item.bet} RUB</b></div>
+                            <div class="full-history-stat">${lang === 'ru' ? 'Полёты' : 'Flights'}: <b>${item.flights}</b></div>
+                            <div class="full-history-stat">${lang === 'ru' ? 'Множитель' : 'Multiplier'}: <b>${item.multiplier}X</b></div>
+                            <div class="full-history-stat">${lang === 'ru' ? 'Шанс' : 'Chance'}: <b>${item.chance}%</b></div>
+                        </div>
+                    `;
+                    container.appendChild(el);
+                });
+            }
+            
             // Запускаем счетчики
             startCounters();
 
@@ -966,24 +1091,11 @@
                 document.getElementById('countdownText').textContent = 
                     lang === 'ru' ? "ИИ сканирует полёты еще:" : "AI scanning flights for:";
                 
-                // Статистические подписи
-                document.getElementById('labelUsers1').textContent = 
-                    lang === 'ru' ? "Пользователей за 24 часа" : "Users in 24h";
+                document.getElementById('historyTitle').textContent = 
+                    lang === 'ru' ? "История прогнозов" : "Prediction History";
                 
-                document.getElementById('labelWins1').textContent = 
-                    lang === 'ru' ? "Выигрышей за 24 часа" : "Wins in 24h";
-                
-                document.getElementById('labelMaxWin1').textContent = 
-                    lang === 'ru' ? "Макс. выигрыш" : "Max win";
-                
-                document.getElementById('labelUsers2').textContent = 
-                    lang === 'ru' ? "Пользователей за 24 часа" : "Users in 24h";
-                
-                document.getElementById('labelWins2').textContent = 
-                    lang === 'ru' ? "Выигрышей за 24 часа" : "Wins in 24h";
-                
-                document.getElementById('labelMaxWin2').textContent = 
-                    lang === 'ru' ? "Макс. выигрыш" : "Max win";
+                document.getElementById('backFromHistoryButton').textContent = 
+                    lang === 'ru' ? "← Назад к прогнозу" : "← Back to Prediction";
 
                 // Обновление текста прогноза, если он есть
                 const predictionText = document.getElementById('predictionText');
@@ -996,6 +1108,9 @@
                         multiplier ${currentPrediction.multiplier}X, Chance of success ${currentPrediction.chance}%<br><br>
                         Good flight!`;
                 }
+                
+                // Обновление истории
+                updateFullPredictionHistory();
             }
 
             // Показать экран
@@ -1125,12 +1240,34 @@
                 });
             }
 
-            // Генерация случайных настроек
+            // Генерация случайных настроек с зависимостью X от ставки
             function generateRandomSettings() {
                 const bet = allowedBets[Math.floor(Math.random() * allowedBets.length)];
-                const flights = Math.floor(Math.random() * (20 - 8 + 1)) + 8;
-                const multiplier = Math.floor(Math.random() * (100 - 15 + 1)) + 15;
+                
+                // Генерируем количество полетов (1-20)
+                const flights = Math.floor(Math.random() * 20) + 1;
+                
+                // Рассчитываем максимальный множитель в зависимости от ставки
+                let maxMultiplier;
+                if (bet <= 100) maxMultiplier = 100;
+                else if (bet <= 1000) maxMultiplier = 50;
+                else if (bet <= 10000) maxMultiplier = 25;
+                else if (bet <= 50000) maxMultiplier = 15;
+                else if (bet <= 100000) maxMultiplier = 10;
+                else maxMultiplier = 7; // Для ставок >100000
+                
+                // Гарантируем, что X > flights
+                const minMultiplier = flights + 1;
+                if (minMultiplier > maxMultiplier) {
+                    maxMultiplier = minMultiplier + 5; // Добавляем буфер
+                }
+                
+                // Генерируем множитель
+                const multiplier = Math.floor(Math.random() * (maxMultiplier - minMultiplier + 1)) + minMultiplier;
+                
+                // Шанс успеха
                 const chance = Math.floor(Math.random() * (98 - 75 + 1)) + 75;
+                
                 return { bet, flights, multiplier, chance, isRandom: true };
             }
 
@@ -1142,15 +1279,15 @@
                     countdownInterval = null;
                 }
                 
-                // Показать таймер, скрыть график и кнопку
+                // Показать таймер, скрыть кнопку
                 const countdownElement = document.getElementById('countdown');
-                const graphElement = document.getElementById('multiplierGraph');
                 const newPredictionButton = document.getElementById('newPredictionButton');
+                const multiplierDisplay = document.getElementById('multiplierDisplay');
                 
-                if (countdownElement && graphElement && newPredictionButton) {
+                if (countdownElement && newPredictionButton && multiplierDisplay) {
                     countdownElement.style.display = 'block';
-                    graphElement.style.display = 'none';
                     newPredictionButton.style.display = 'none';
+                    multiplierDisplay.style.display = 'none';
                 }
                 
                 // Генерация прогноза
@@ -1159,6 +1296,17 @@
                 } else {
                     currentPrediction = settings;
                 }
+                
+                // Добавление в историю
+                const historyItem = {
+                    ...currentPrediction,
+                    timestamp: new Date().toISOString()
+                };
+                
+                predictionHistory.unshift(historyItem);
+                if (predictionHistory.length > 50) predictionHistory.pop();
+                localStorage.setItem('prediction_history', JSON.stringify(predictionHistory));
+                updateFullPredictionHistory();
                 
                 // Обновление текста прогноза
                 const predictionText = document.getElementById('predictionText');
@@ -1184,12 +1332,22 @@
                 let timeLeft = seconds;
                 const countdownElement = document.getElementById('countdownValue');
                 const countdownContainer = document.getElementById('countdown');
-                const graphElement = document.getElementById('multiplierGraph');
                 const newPredictionButton = document.getElementById('newPredictionButton');
-                const graphBar = document.getElementById('graphBar');
+                const multiplierDisplay = document.getElementById('multiplierDisplay');
                 
                 if (countdownElement) {
                     countdownElement.textContent = `${timeLeft} ${lang === 'en' ? 'sec' : 'сек'}`;
+                    
+                    // Воспроизведение звука обратного отсчета
+                    try {
+                        const sound = document.getElementById('countdownSound');
+                        if (sound) {
+                            sound.currentTime = 0;
+                            sound.play();
+                        }
+                    } catch (e) {
+                        console.log("Ошибка воспроизведения звука:", e);
+                    }
                     
                     countdownInterval = setInterval(() => {
                         timeLeft--;
@@ -1199,20 +1357,23 @@
                             clearInterval(countdownInterval);
                             countdownInterval = null;
                             
-                            // Показать график и кнопку
-                            if (countdownContainer && graphElement && newPredictionButton && graphBar) {
+                            // Показать множитель и кнопку
+                            if (countdownContainer && newPredictionButton && multiplierDisplay) {
                                 countdownContainer.style.display = 'none';
-                                graphElement.style.display = 'block';
                                 newPredictionButton.style.display = 'block';
+                                multiplierDisplay.style.display = 'block';
+                                multiplierDisplay.textContent = `${currentPrediction.multiplier}X`;
                                 
-                                // Анимация графика
-                                graphBar.style.width = '0';
-                                graphBar.setAttribute('data-multiplier', currentPrediction.multiplier);
-                                
-                                setTimeout(() => {
-                                    graphBar.style.width = `${currentPrediction.multiplier}%`;
-                                    graphBar.style.setProperty('--target-width', `${currentPrediction.multiplier}%`);
-                                }, 100);
+                                // Воспроизведение звука множителя
+                                try {
+                                    const sound = document.getElementById('multiplierSound');
+                                    if (sound) {
+                                        sound.currentTime = 0;
+                                        sound.play();
+                                    }
+                                } catch (e) {
+                                    console.log("Ошибка воспроизведения звука:", e);
+                                }
                             }
                         }
                     }, 1000);
@@ -1293,6 +1454,22 @@
                 });
             }
 
+            // Кнопка истории
+            const historyButton = document.getElementById('historyButton');
+            if (historyButton) {
+                historyButton.addEventListener('click', () => {
+                    showScreen('screen5');
+                });
+            }
+
+            // Кнопка назад из истории
+            const backFromHistoryButton = document.getElementById('backFromHistoryButton');
+            if (backFromHistoryButton) {
+                backFromHistoryButton.addEventListener('click', () => {
+                    showScreen('screen3');
+                });
+            }
+
             // Обработчики кнопок языка
             document.getElementById('ruButton1').addEventListener('click', () => updateLanguage('ru'));
             document.getElementById('enButton1').addEventListener('click', () => updateLanguage('en'));
@@ -1302,6 +1479,8 @@
             document.getElementById('enButton3').addEventListener('click', () => updateLanguage('en'));
             document.getElementById('ruButton4').addEventListener('click', () => updateLanguage('ru'));
             document.getElementById('enButton4').addEventListener('click', () => updateLanguage('en'));
+            document.getElementById('ruButton5').addEventListener('click', () => updateLanguage('ru'));
+            document.getElementById('enButton5').addEventListener('click', () => updateLanguage('en'));
 
             // Горячая клавиша для админ-панели (Ctrl+A)
             document.addEventListener('keydown', function(event) {
@@ -1329,6 +1508,9 @@
             
             // Инициализация выпадающего списка
             initBetSuggestions();
+            
+            // Инициализация истории
+            updateFullPredictionHistory();
         });
     </script>
 </body>
